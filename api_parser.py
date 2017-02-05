@@ -61,7 +61,7 @@ class ApiParser:
         if "health" not in self.api:
             return priv_api
 
-        # Добавляем поля ауры, протухания данных и типа боя
+        # Добавляем поля ауры, протухания данных, типа боя и города
         priv_api = {"arena_fight": self.api["arena_fight"],
                     "aura": "",
                     "diary_last": self.api["diary_last"],
@@ -75,7 +75,7 @@ class ApiParser:
                     "inventory_num": self.api["inventory_num"],
                     "quest_progress": self.api["quest_progress"],
                     "quest": self.api["quest"],
-                    "town_name": self.api["town_name"],
+                    "town_name": "",
                     }
         if "aura" in self.api:
             priv_api["aura"] = self.api["aura"]
@@ -83,6 +83,8 @@ class ApiParser:
             priv_api["expired"] = self.api["expired"]
         if "fight_type" in self.api:
             priv_api["fight_type"] = self.api["fight_type"]
+        if "town_name" in self.api:
+            priv_api["town_name"] = self.api["town_name"]
 
         # Переделаем инвентарь в массив
         if priv_api["inventory_num"] > 0:
