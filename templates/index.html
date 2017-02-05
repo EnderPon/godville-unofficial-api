@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Демонстрация GV extended API</title>
+    <meta charset="utf-8"/>
+</head>
+<body>
+    <p>Запросы происходят не чаще чем раз в 60 секунд</p>
+    <p>Допускаются get параметры h и ascii</p>
+    <p>для добавления оступов и замену не ascii символов на \uxxx.</p>
+    <p>(Отступы видны только при просмотре кода страницы)</p>
+    <br/>
+    <form>
+        Пример запроса:<br/>
+        Имя бога: <input name="godname" required/><br/>
+        Отступы: <input type="checkbox" name="h" checked/><br/>
+        Только ascii <input type="checkbox" name="ascii"/><br/>
+        <input type="submit"/><br/>
+    </form>
+</body>
+</html>
