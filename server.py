@@ -79,7 +79,7 @@ def main_page():
     else:
         godname = request.args.get("godname")
         h, ascii_ = request.args.get("h"), request.args.get("ascii")
-        redirect_url = godname + "?"
+        redirect_url = "/god/" + godname + "?"
         if h is not None:
             redirect_url += "h=1&"
         if ascii_ is not None:
@@ -87,7 +87,7 @@ def main_page():
         return redirect(redirect_url)
 
 
-@app.route("/<godname>")
+@app.route("/god/<godname>")
 def api_request(godname):
     if godname == "":
         return
@@ -98,5 +98,10 @@ def api_request(godname):
     global update
     try:
         return update.get_update(godname, h, ascii_)
+    except AttributeError:
+        abort(404)
     except NameError:
         abort(404)
+
+if __name__ == "__main__":
+    app.run()
