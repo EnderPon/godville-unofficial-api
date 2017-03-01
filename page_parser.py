@@ -7,7 +7,8 @@ class GodPageParser:
     # Парсер страницы бога (https://godville.net/gods/***)
     def __init__(self, page_text):
         # фиксим потеряные теги
-        page_text = re.sub("""(<td class="label">Сбережения</td>\s*<td class="name">.*?</td>)""", """<tr>\g<1></tr>""", page_text)
+        page_text = re.sub("""(<td class="label">Сбережения</td>\s*<td class="name">.*?</td>)""",
+                           """<tr>\g<1></tr>""", page_text)
         self.soup = BeautifulSoup(page_text, 'html.parser')
         return
 
@@ -22,8 +23,28 @@ class GodPageParser:
                 break
         return answer
 
-    def get_levels(self):
+    def _str_to_num(self, str_):
+        if str_ == "ни одного":
+            return 0
+        elif str_ == "десяток":
+            return 10
+        elif str_ == "около сотни":
+            return 100
+        elif str_ == "около тысячи":
+            return 1000
+        else:
+            try:
+                num, line = re.findall("около (\d+) (сотен|тысяч)", str_)[0]
+            except:
+                print("Unexpected number " + str_)
+                return 0
+            if line == "тысяч":
+                return 1000 * int(num)
+            if line == "сотен":
+                return 100 * int(num)
+            return 0  # сюда не должны попадать
 
+    def get_levels(self):
         levels_str = str(self.soup.find(class_="level").text)
         hero_lvl, trader_lvl = (re.search("(\d+)\D+(\d*)", levels_str).group(1, 2))
         # Хотя бы одна цифра, хотя бы одна не цифра, сколько угодно цифр
@@ -50,12 +71,14 @@ class GodPageParser:
 
         avatar_url = "https://secure.gravatar.com/avatar/" + \
                      str(self.soup.find(id="avatar").img)[10:42]
+        motto = self.soup.find(class_="motto").text.strip()
 
         return {"hero_name": hero,
-                "hero_gender": g_gender,
+                "hero_gender": h_gender,
                 "god_name": god,
                 "god_gender": g_gender,
-                "avatar_url": avatar_url,}
+                "avatar_url": avatar_url,
+                "motto": motto}
 
     def get_badges(self):
         badges_list = {
@@ -80,7 +103,7 @@ class GodPageParser:
             symbol = parsed_str[0]
             ru_name = parsed_str[1]
             date = parsed_str[2]
-            result[badges_list[parsed_str[1]]] ={
+            result[badges_list[parsed_str[1]]] = {
                 "symbol": symbol,
                 "ru_name": ru_name,
                 "date": date
@@ -89,14 +112,16 @@ class GodPageParser:
 
     def get_characteristics(self):
         characts_html = self.soup.find(id="characteristics").findAll("tr")
-        #print(characts_html)
         # для некоторых выставим нули, вдруг их нет на странице
         characts = {"creatures_m": 0,
                     "creatures_f": 0,
                     "creatures_percent": 0,
                     "creatures_comleted_at": "",
                     "savings": 0,
-                    "shop": ""}
+                    "shop": "",
+                    "wood_cnt": 0,
+                    "temple_completed_at": "",
+                    "ark_completed_at": ""}
         for charact in characts_html:
             label = str(charact.find(class_="label").text).strip()
             name = str(charact.find(class_="name").text).strip()
@@ -105,9 +130,20 @@ class GodPageParser:
             if label == "Возраст":
                 characts["age"] = name
                 pass
+            if label == "Характер":
+                characts["alignment"] = name
+                pass
+            if label == "Гильдия":
+                if name == "не состоит":
+                    characts["clan"] = name
+                    characts["clan_position"] = ""
+                else:
+                    clan = re.findall("(.*)\((.*)\)", name.replace("\n", " "))[0]
+                    characts["clan"] = clan[0].strip()
+                    characts["clan_position"] = clan[1]
             if label == "Убито монстров":
                 characts["monsters"] = name
-                characts["monsters_num"] = self.str_to_num(name)
+                characts["monsters_num"] = self._str_to_num(name)
                 pass
             if label == "Смертей":
                 characts["deaths"] = int(name)
@@ -128,6 +164,20 @@ class GodPageParser:
                 characts["creatures_f"] = 1000
                 characts["creatures_percent"] = 1000
                 characts["creatures_comleted_at"] = name
+            if label == "Храм достроен":
+                characts["temple_completed_at"] = name
+                characts["bricks_cnt"] = 1000
+            if label == "Кирпичей для храма":
+                characts["bricks_cnt"] = int(name[:-1].replace(".", ""))
+                pass
+            if label == "Ковчег достроен":
+                ark = re.findall("(.*)\((.*)\)", name.replace("\n", " "))[0]
+                characts["ark_completed_at"] = ark[0].strip()
+                characts["wood_cnt"] = int(ark[1][:-1].replace(".", ""))
+                pass
+            if label == "Дерева для ковчега":
+                characts["wood_cnt"] = int(name[:-1].replace(".", ""))
+                pass
             if label == "Сбережения":
                 characts["savings"] = int(re.findall("(\d*)\D*", name)[0])
                 pass
@@ -136,30 +186,9 @@ class GodPageParser:
                 pass
             if label == "Золотых":
                 characts["gold"] = name
-                characts["gold_num"] = self.str_to_num(name)
+                characts["gold_num"] = self._str_to_num(name)
                 pass
         return characts
-
-    def str_to_num(self, str_):
-        if str_ == "ни одного":
-            return 0
-        elif str_ == "десяток":
-            return 10
-        elif str_ == "около сотни":
-            return 100
-        elif str_ == "около тысячи":
-            return 1000
-        else:
-            try:
-                num, line = re.findall("около (\d+) (сотен|тысяч)", str_)[0]
-            except:
-                print("Unexpected number " + str_)
-                return 0
-            if line == "тысяч":
-                return 1000 * num
-            if line == "сотен":
-                return 100 * num
-            return 0  # сюда не должны попадать
 
     def get_equipment(self):
         items = self.soup.find(id="equipment").findAll("tr")
@@ -225,6 +254,7 @@ class GodPageParser:
         page_data.update(self.get_panteons())
         page_data.update(self.get_achievements())
         page_data.update(self.get_chronicle())
+        page_data.update(self.get_essential())
 
         """print("Уровни", self.get_levels())
         print("Значки", self.get_badges())
