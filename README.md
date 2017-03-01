@@ -14,7 +14,9 @@
 Пример можно увидеть тут http://gvapi.g0fs.com/
 
 Значения, возвращаемые этим API:
+
 1. Значения, которые берутся со страницы бога
+
 |Ключ|Тип|Содержание|
 |--- | --- | ---
 |hero_name|string
@@ -55,13 +57,15 @@
 |chronicle_update|string
 
 2. Значения, доступные в открытой части малого API
-|Ключ|Тип|Содержание|
-|--- | --- | ---
-|inventory_max_num|int
-|max_health|int
-|savings_completed_at|string
+
+Ключ|Тип|Содержание|
+--- | --- | ---
+inventory_max_num|int
+max_health|int
+savings_completed_at|string
 
 3. Значения из оперативного API
+
 |Ключ|Тип|Содержание|
 |--- | --- | ---
 |health|int
