@@ -107,6 +107,7 @@ class GodPageParser:
                 pass
             if label == "Убито монстров":
                 characts["monsters"] = name
+                characts["monsters_num"] = self.str_to_num(name)
                 pass
             if label == "Смертей":
                 characts["deaths"] = int(name)
@@ -135,8 +136,30 @@ class GodPageParser:
                 pass
             if label == "Золотых":
                 characts["gold"] = name
+                characts["gold_num"] = self.str_to_num(name)
                 pass
         return characts
+
+    def str_to_num(self, str_):
+        if str_ == "ни одного":
+            return 0
+        elif str_ == "десяток":
+            return 10
+        elif str_ == "около сотни":
+            return 100
+        elif str_ == "около тысячи":
+            return 1000
+        else:
+            try:
+                num, line = re.findall("около (\d+) (сотен|тысяч)", str_)[0]
+            except:
+                print("Unexpected number " + str_)
+                return 0
+            if line == "тысяч":
+                return 1000 * num
+            if line == "сотен":
+                return 100 * num
+            return 0  # сюда не должны попадать
 
     def get_equipment(self):
         items = self.soup.find(id="equipment").findAll("tr")

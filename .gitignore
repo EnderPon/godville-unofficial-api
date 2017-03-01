@@ -90,3 +90,5 @@ ENV/
 
 # Test dir
 test/
+db.json
+Будет удалено .idea/
