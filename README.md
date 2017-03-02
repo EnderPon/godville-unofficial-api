@@ -19,67 +19,92 @@
 
 |Ключ|Тип|Содержание|
 |--- | --- | ---
-|hero_name|string
-|hero_gender|string
-|god_name|string
-|god_gender|string
-|avatar_url|string
-|hero_lvl|int
-|trader_lvl|int
-|motto|string
-|badges|object
-|age|string
-|alignment|string
-|clan|string
-|clan_position|string
-|gold|string
-|gold_num|int
-|monsters|string
-|monsters_num|string
-|deaths|int
-|wins|int
-|looses|int
-|ark_completed_at|string
-|wood_cnt|int
-|temple_completed_at|string
-|bricks_cnt|int
-|savings|int
-|creatures_completed_at|string
-|creatures_percent|float
-|exp_progress|int
-|creatures_m|int
-|creatures_f|int
-|shop|string
-|equipment|object
-|skills|object
-|panteons|object
-|achievements|object
-|chronicle_update|string
+|hero_name|string|Имя героя
+|hero_gender|string|Пол героя (f или m)
+|god_name|string|Имя бога
+|god_gender|string|Пол бога (f или m)
+|avatar_url|string|URL аватара
+|hero_lvl|int|Уровень героя
+|trader_lvl|int|Уровень торговца (0 пока нет лавки)
+|motto|string|Девиз (Пустая строка, если нет)
+|badges|object|Объект, содержащий медали (храм, звероводство и тому подобное)
+|age|string|Возраст героя
+|alignment|string|Характер
+|clan|string|Гильдия
+|clan_position|string|Статус в гильдии (если не состоит в гильдии, то пустая строка)
+|gold|string|Количество золота строкой (около N тысяч)
+|gold_num|int|Количество золота числом (приблизительное)
+|monsters|string|Количество убитых монстров стрококй (около N тысяч)
+|monsters_num|string|Количество убитых монстров числом (приблизительное)
+|deaths|int|Количество смертей
+|wins|int|Количество побед
+|looses|int|Количество поражений
+|ark_completed_at|string|Дата окончания ковчега
+|wood_cnt|int|КОличество брёвен (0, если не окончен храм)
+|temple_completed_at|string|Дата окончания храма
+|bricks_cnt|int|Количество кирпичей (1000, если храм построен)
+|savings|int|Сбережения (количество тысяч)
+|creatures_completed_at|string|Дата сбора существ
+|creatures_pairs|float|Количество полных пар
+|creatures_m|int|Количество самцов
+|creatures_f|int|Количество самок
+|shop|string|Название лавки (пустая строка, если нет)
+|equipment|object|Снаряжение героя
+|skills|object|Умения
+|panteons|object|Пантеоны
+|achievements|object|Заслуги
+|chronicle_update|string|Дата последнего обновления хроники
 
 2. Значения, доступные в открытой части малого API
 
 Ключ|Тип|Содержание|
 --- | --- | ---
-inventory_max_num|int
-max_health|int
-savings_completed_at|string
+inventory_max_num|int|Максимальный размер инвентаря
+max_health|int|Максимальный запас здоровья
+savings_completed_at|string|Дата сбора пенсии
 
 3. Значения из оперативного API
 
 |Ключ|Тип|Содержание|
 |--- | --- | ---
-|health|int
-|arena_fight|bool
-|godpower|int
-|inventory|object
-|diary_last|string
-|update_time|int
-|expired|bool
-|aura|string
-|trader_lvl|int
-|quest_progress|int
-|distance|int
-|quest|string
-|town_name|string
-|fight_type|string
-|inventory_num|int
+|health|int|Количество здоровья в данный момент
+|arena_fight|bool|Находится ли герой в бою (море, тренировка, арена, подземелье, босс)
+|godpower|int|Количество праны
+|inventory|object|Содержимое инвентаря
+|diary_last|string|Последняя запись в дневнике
+|expired|bool|Показатель неактуальности данных
+|aura|string|Название ауры на герое (если её нет, то пустая строка)
+|quest_progress|int|Процент выполнения квеста
+|distance|int|Растояние до столицы (0 если в городе)
+|quest|string|Название квеста
+|town_name|string|Город, в котором сейчас герой (пустая строка если в поле)
+|fight_type|string|Тип боя (sail - морской поход, arena - арена (ЗПГ в том числе), challenge - тренировка, dungeon - подземелье)
+|inventory_num|int|Количество предметов в инвентаре
+|exp_progress|int|Количество опыта
+
+4. Прочее
+
+|Ключ|Тип|Содержание|
+|--- | --- | ---
+|update_time|int|unix timestamp времени, когда были получны эти данные
+
+5. Пояснения к объектам
+
+* badges: содержит 4 объекта: temple, ark, pet и creatures. Если медаль ещё не получена, то {"temple": None}
+ А если получена, то содержит {"temple":{"symbol": "庙", "ru_name": "Храмовладелец", "date": "11.11.2013 20:57"}}
+* equipment: массив из 7 элементов, каждый из которых содержит {"type": "Оружие", "name": "орудие труда", "level": "+116"}
+ или {"type": "Ноги", "name": "пусто", "level": ""}
+* skills: массив умений ("name": "маскировка под дуб", "level": "98")
+* panteons: массив пантеонов: {"name": "Мощи", "position": "771"}
+* achievements: массив строк ["Заслуженный Заводчик", ...]
+* inventory: массив, содержащий вещи из инвентаря, в том порядке, в каком они у героя.
+
+|Ключ|Тип|Содержание|
+|--- | --- | ---
+|name|string|Название трофея
+|cnt|int|Количество этого трофея в инвентаре
+|bold|bool|Жирный
+|heal_potion|bool|Лечилка
+|activate_by_user|bool|Активируемый
+|needs_godpower|int|Количество праны для активации (0 у неактивируемых)
+|description|string|Описание трофея (для активируемых)
