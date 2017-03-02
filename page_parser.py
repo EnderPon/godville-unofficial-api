@@ -158,7 +158,7 @@ class GodPageParser:
                 creat = re.findall("(\d+)м,\\xa0(\d+)ж \(([\d\.]+)%\)", name)[0]
                 characts["creatures_m"] = creat[0]
                 characts["creatures_f"] = creat[1]
-                characts["creatures_pairs"] = int(float(creat[2]*10))
+                characts["creatures_pairs"] = int(float(creat[2])*10)
                 characts["creatures_comleted_at"] = ""
             if label == "Твари собраны":
                 characts["creatures_m"] = 1000
@@ -207,7 +207,8 @@ class GodPageParser:
             skills_list = skills_list.findAll("li")
             for skill_ in skills_list:
                 skill = re.findall("""<li>(.*)<span> (\d+).*</span></li>""", str(skill_))[0]
-                skills.append(skill)
+                skills.append({"name": skill[0],
+                               "level": skill[1]})
         return {"skills": skills}
 
     def get_panteons(self):
