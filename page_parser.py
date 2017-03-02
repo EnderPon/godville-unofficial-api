@@ -121,7 +121,8 @@ class GodPageParser:
                     "shop": "",
                     "wood_cnt": 0,
                     "temple_completed_at": "",
-                    "ark_completed_at": ""}
+                    "ark_completed_at": "",
+                    "motto": ""}
         for charact in characts_html:
             label = str(charact.find(class_="label").text).strip()
             name = str(charact.find(class_="name").text).strip()
@@ -157,7 +158,7 @@ class GodPageParser:
                 creat = re.findall("(\d+)м,\\xa0(\d+)ж \(([\d\.]+)%\)", name)[0]
                 characts["creatures_m"] = creat[0]
                 characts["creatures_f"] = creat[1]
-                characts["creatures_percent"] = float(creat[2])
+                characts["creatures_pairs"] = int(float(creat[2]*10))
                 characts["creatures_comleted_at"] = ""
             if label == "Твари собраны":
                 characts["creatures_m"] = 1000
