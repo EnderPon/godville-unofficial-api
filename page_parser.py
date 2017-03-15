@@ -185,10 +185,6 @@ class GodPageParser:
             if label == "Лавка":
                 characts["shop"] = name[1:-1]
                 pass
-            if label == "Золотых":
-                characts["gold"] = name
-                characts["gold_num"] = self._str_to_num(name)
-                pass
         return characts
 
     def get_equipment(self):
