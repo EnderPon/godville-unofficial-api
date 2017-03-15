@@ -88,7 +88,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# Test dir
 test/
 db.json
-Будет удалено .idea/
+.idea/

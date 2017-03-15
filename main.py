@@ -7,13 +7,15 @@ from page_parser import GodPageParser
 from api_parser import ApiParser
 
 
-def api_request(god_name):
+def api_request(god_name, token=None):
     # запрашиваем страницу бога, малое апи и объеденяем, попутно приписывая время
     # когда был получен этот результат
     god_page = requests.get("https://godville.net/gods/" + god_name)
     time.sleep(1)
-    api_page = requests.get("https://godville.net/gods/api/" + god_name + ".json")
-
+    if token is not None:
+        api_page = requests.get("https://godville.net/gods/api/" + god_name + "/" + token)
+    else:
+        api_page = requests.get("https://godville.net/gods/api/" + god_name)
     god_page_parsed = GodPageParser(god_page.text).get()
     if api_page.status_code == 200:
         api_parsed = ApiParser(api_page.json()).get()
