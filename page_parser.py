@@ -115,7 +115,7 @@ class GodPageParser:
         # для некоторых выставим нули, вдруг их нет на странице
         characts = {"creatures_m": 0,
                     "creatures_f": 0,
-                    "creatures_percent": 0,
+                    "creatures_pairs": 0,
                     "creatures_comleted_at": "",
                     "savings": 0,
                     "shop": "",
@@ -163,7 +163,7 @@ class GodPageParser:
             if label == "Твари собраны":
                 characts["creatures_m"] = 1000
                 characts["creatures_f"] = 1000
-                characts["creatures_percent"] = 1000
+                characts["creatures_pairs"] = 1000
                 characts["creatures_comleted_at"] = name
             if label == "Храм достроен":
                 characts["temple_completed_at"] = name
